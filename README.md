@@ -1,124 +1,184 @@
 # Omarchy Camera 📷
 
-A simple, lightweight camera application for Linux (specifically built for Omarchy, an Arch-based Hyprland distro).
+A full-featured camera application for Linux with live preview, photo capture, and video recording. Built specifically for Omarchy (Arch-based Hyprland distro) but works on any Linux system.
 
-## Features
+![Screenshot](https://img.shields.io/badge/status-stable-green) ![Platform](https://img.shields.io/badge/platform-Linux-blue) ![License](https://img.shields.io/badge/license-MIT-lightgrey)
 
-- 📸 Take photos
-- 🎥 Record videos
-- 🖼️ Live camera preview
-- 💾 Auto-save to `~/Pictures/Camera`
-- 🎨 Modern GTK4 interface
-- 🌊 Wayland compatible
+## ✨ Features
 
-## Requirements
+- 📸 **Photo Mode** - Instant high-quality photo capture
+- 🎥 **Video Mode** - Record videos with live preview
+- 👁️ **Live Preview** - Toggle camera preview on/off to save resources
+- 🔄 **Mode Switching** - Easy toggle between photo and video modes
+- 🎨 **Modern UI** - Clean Catppuccin-themed interface
+- 💾 **Auto-save** - All media automatically saved to `~/Pictures/Camera`
+- 🔴 **Recording Indicator** - Visual REC indicator during video recording
+- ⚡ **Lightweight** - Uses OpenCV and Tkinter (minimal dependencies)
 
-- Python 3
-- GTK 4
-- GStreamer with plugins
-- v4l2 (Video4Linux2) for camera access
+## 🚀 Quick Start
 
-## Installation
-
-### Arch Linux / Omarchy
+### Automatic Installation (Recommended)
 
 ```bash
-sudo pacman -S python gtk4 gstreamer gst-plugins-base gst-plugins-good gst-plugins-bad gst-plugin-gtk python-gobject
+git clone https://github.com/YashasVM/cam.git
+cd cam
+./install.sh
 ```
 
-### Other Distributions
+The installer will:
+- Check system requirements
+- Install dependencies (python-opencv, python-pillow, tk)
+- Install the app to `/usr/local/bin/omarchy-camera`
+- Add it to your application menu
+- Check camera permissions
 
-**Debian/Ubuntu:**
-```bash
-sudo apt install python3 gir1.2-gtk-4.0 gstreamer1.0-tools gstreamer1.0-plugins-base gstreamer1.0-plugins-good gstreamer1.0-plugins-bad python3-gi
-```
-
-**Fedora:**
-```bash
-sudo dnf install python3 gtk4 gstreamer1 gstreamer1-plugins-base gstreamer1-plugins-good gstreamer1-plugins-bad python3-gobject
-```
-
-## Usage
-
-### Run the application
+### Manual Installation
 
 ```bash
+# 1. Install dependencies
+sudo pacman -S python python-opencv python-pillow tk
+
+# 2. Run directly
 python3 camera.py
-```
 
-Or make it executable:
-
-```bash
-chmod +x camera.py
-./camera.py
-```
-
-### Install system-wide (optional)
-
-```bash
+# OR install system-wide
 sudo cp camera.py /usr/local/bin/omarchy-camera
 sudo chmod +x /usr/local/bin/omarchy-camera
 ```
 
-Then run with:
+## 📖 Usage
+
+### Launching
+
+- **Terminal**: `omarchy-camera` or `python3 camera.py`
+- **App Menu**: Search for "Omarchy Camera"
+
+### Controls
+
+1. **Mode Selection** (Top bar)
+   - Click "📷 Photo" for photo mode
+   - Click "🎥 Video" for video mode
+
+2. **Preview Toggle**
+   - Click "👁️ Preview ON/OFF" to toggle live preview
+   - Turn off preview to save CPU when not actively using camera
+
+3. **Capture Actions**
+   - **Photo Mode**: Click "📷 CAPTURE" to take a photo (with flash effect)
+   - **Video Mode**: Click "🔴 START RECORDING" to begin, "⏹️ STOP RECORDING" to finish
+
+### File Output
+
+- **Photos**: `~/Pictures/Camera/photo_YYYYMMDD_HHMMSS.jpg`
+- **Videos**: `~/Pictures/Camera/video_YYYYMMDD_HHMMSS.avi`
+
+## 🔧 System Check
+
+Run the test script to verify your system:
+
 ```bash
-omarchy-camera
+./test-system.sh
 ```
 
-## Desktop Integration
+This will check:
+- Python installation
+- Camera device availability
+- Required Python modules
 
-Create a `.desktop` file for application menu integration:
-
-```bash
-cp omarchy-camera.desktop ~/.local/share/applications/
-```
-
-## Controls
-
-- **📷 Take Photo** - Capture a single photo
-- **🔴 Record Video** - Start/stop video recording
-
-All photos and videos are saved to `~/Pictures/Camera/`
-
-## File Naming
-
-- Photos: `photo_YYYYMMDD_HHMMSS.jpg`
-- Videos: `video_YYYYMMDD_HHMMSS.mp4`
-
-## Troubleshooting
+## 🛠️ Troubleshooting
 
 ### Camera not detected
 
-Check if your camera is recognized:
 ```bash
+# Check for camera devices
 ls /dev/video*
+
+# List all video devices
 v4l2-ctl --list-devices
+
+# Test camera with mpv
+mpv av://v4l2:/dev/video0
 ```
 
-### Permission issues
+### Permission denied
 
-Add your user to the `video` group:
+Add yourself to the `video` group:
+
 ```bash
 sudo usermod -aG video $USER
 ```
 
-Then log out and log back in.
+Then **log out and log back in** for changes to take effect.
 
-### Missing GStreamer plugins
+### Camera in use
 
-If you see errors about missing elements, install additional GStreamer plugins:
+Close other applications using the camera:
+- Web browsers (video calls, camera tests)
+- Video chat apps (Zoom, Teams, Discord)
+- Other camera applications
+
+### Dependency conflicts
+
+If you get GStreamer version conflicts:
+
 ```bash
-sudo pacman -S gst-libav gst-plugins-ugly
+# Update system first
+sudo pacman -Syu
+
+# Then install dependencies
+sudo pacman -S python python-opencv python-pillow tk
 ```
 
-## License
+## 📋 Requirements
 
-MIT License - feel free to use, modify, and distribute!
+- **OS**: Linux (tested on Arch/Omarchy)
+- **Python**: 3.8+
+- **Dependencies**:
+  - `python-opencv` - Camera capture and video processing
+  - `python-pillow` - Image handling
+  - `tk` - GUI framework
+- **Hardware**: v4l2 compatible camera (most USB/built-in cameras)
 
-## Contributing
+## 🎯 Technical Details
 
-Contributions are welcome! Feel free to open issues or submit pull requests.
+- **Framework**: Python with Tkinter GUI
+- **Video Backend**: OpenCV (cv2)
+- **Video Codec**: XVID (AVI format, widely compatible)
+- **Resolution**: 1280x720 @ 30fps (configurable in code)
+- **Preview**: ~30fps live preview with 960x540 display
+- **Theme**: Catppuccin Mocha colors
+
+## 📁 Project Structure
+
+```
+cam/
+├── camera.py              # Main application
+├── camera.sh              # Bash alternative (ffmpeg-based)
+├── install.sh             # Complete installer
+├── test-system.sh         # System check script
+├── omarchy-camera.desktop # Desktop entry
+└── README.md             # This file
+```
+
+## 🤝 Contributing
+
+Contributions welcome! Feel free to:
+- Report bugs
+- Suggest features
+- Submit pull requests
+
+## 📄 License
+
+MIT License - See LICENSE file for details
+
+## 🙏 Acknowledgments
+
+- Built for the [Omarchy](https://omarchy.org) Linux distribution
+- Uses [OpenCV](https://opencv.org/) for camera handling
+- UI inspired by [Catppuccin](https://github.com/catppuccin/catppuccin) theme
 
 ---
 
-Made for [Omarchy](https://github.com/omarchy) 🐧
+**Made with ❤️ for Omarchy** 🐧
+
+Need help? Open an issue on [GitHub](https://github.com/YashasVM/cam/issues)
