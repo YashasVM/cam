@@ -1,0 +1,11 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Omarchy Camera
+Comment=Simple camera application for Omarchy
+Exec=/usr/local/bin/omarchy-camera
+Icon=camera-photo
+Terminal=false
+Categories=Graphics;Photography;Video;AudioVideo;
+Keywords=camera;photo;video;webcam;
+StartupNotify=true
